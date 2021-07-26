@@ -1,24 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Wrapper from "./components/Wrapper";
+import "./App.css";
+import { ApolloProvider, InMemoryCache, ApolloClient } from "@apollo/client";
+
+//Connecting with the Canonic API
+const client = new ApolloClient({
+  uri: "https://kanban-eei635.hem.canonic.dev/graphql",
+  cache: new InMemoryCache(),
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApolloProvider client={client}>
+      <div className="App" style={{ height: "100vh" }}>
+        <Wrapper />
+      </div>
+    </ApolloProvider>
   );
 }
 
