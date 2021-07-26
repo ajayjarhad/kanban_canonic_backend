@@ -32,7 +32,6 @@ const Tasks = ({ columns, column }) => {
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(open);
   return (
     <div>
       {columns &&
