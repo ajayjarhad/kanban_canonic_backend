@@ -162,6 +162,7 @@ const Board = () => {
                               padding: 4,
                               width: 250,
                               minHeight: 350,
+                              borderRadius: "4px",
                             }}
                           >
                             <Tasks columns={columns} column={column} />

@@ -47,8 +47,9 @@ const Tasks = ({ columns, column }) => {
                       padding: 16,
                       margin: "0 0 8px 0",
                       minHeight: "50px",
+                      borderRadius: "4px",
                       backgroundColor: snapshot.isDragging
-                        ? "#263B4A"
+                        ? "#19267a"
                         : "#3f51b5",
                       color: "white",
                       ...provided.draggableProps.style,
