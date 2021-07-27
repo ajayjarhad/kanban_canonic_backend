@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Grid from "@material-ui/core/Grid";
 import AddIcon from "@material-ui/icons/Add";
-import Button from "@material-ui/core/Button";
+import LoopIcon from "@material-ui/icons/Loop";
+import { TextField, Grid, Button } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
@@ -36,8 +35,8 @@ const UPDATE_COLUMN = gql`
 `;
 const NewTask = ({ taskIds, columnId, columnNumber, columnTitle }) => {
   const classes = useStyles();
-  const [updateColumn] = useMutation(UPDATE_COLUMN);
-  const [createTask, { data }] = useMutation(ADD_TASK);
+  const [updateColumn, { loading: UCLoading }] = useMutation(UPDATE_COLUMN);
+  const [createTask, { data, loading: ATLoading }] = useMutation(ADD_TASK);
   const [content, setContent] = useState("");
   const [description, setDescription] = useState("");
 
@@ -109,7 +108,7 @@ const NewTask = ({ taskIds, columnId, columnNumber, columnTitle }) => {
           variant="contained"
           color="secondary"
           className={classes.button}
-          startIcon={<AddIcon />}
+          startIcon={UCLoading || ATLoading ? <LoopIcon /> : <AddIcon />}
         >
           Add
         </Button>

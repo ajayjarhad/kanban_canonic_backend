@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Modal from "@material-ui/core/Modal";
 import { Draggable } from "react-beautiful-dnd";
-import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
 import CloseIcon from "@material-ui/icons/Close";
-import Button from "@material-ui/core/Button";
+import { Button, Fade, Backdrop, Modal } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",

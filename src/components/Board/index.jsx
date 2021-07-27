@@ -3,6 +3,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import Tasks from "../Tasks";
 import NewTasks from "../NewTask";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 // This query fetches columns from the backend built in Canonic.
 const GET_COLUMN = gql`
@@ -46,7 +47,6 @@ const Board = () => {
       }
     }
   }, [column.data]);
-
   // useeffect is called to filter the list of task ids from column.
   useEffect(() => {
     if (columns) {
@@ -130,56 +130,60 @@ const Board = () => {
         marginLeft: "15%",
       }}
     >
-      <DragDropContext
-        onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-      >
-        {columns &&
-          Object.entries(columns).map(([columnId, column], index) => {
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-                key={columnId}
-              >
-                <h2>{column.title}</h2>
-                <div style={{ margin: 8 }}>
-                  <Droppable droppableId={columnId} key={columnId}>
-                    {(provided, snapshot) => {
-                      return (
-                        <div
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          style={{
-                            background: snapshot.isDraggingOver
-                              ? "#eaecfa"
-                              : "#eaecfa",
-                            padding: 4,
-                            width: 250,
-                            minHeight: 350,
-                          }}
-                        >
-                          <Tasks columns={columns} column={column} />
-                          {provided.placeholder}
-                        </div>
-                      );
-                    }}
-                  </Droppable>
+      {column.loading ? (
+        <CircularProgress />
+      ) : (
+        <DragDropContext
+          onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
+        >
+          {columns &&
+            Object.entries(columns).map(([columnId, column], index) => {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                  key={columnId}
+                >
+                  <h2>{column.title}</h2>
+                  <div style={{ margin: 8 }}>
+                    <Droppable droppableId={columnId} key={columnId}>
+                      {(provided, snapshot) => {
+                        return (
+                          <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            style={{
+                              background: snapshot.isDraggingOver
+                                ? "#eaecfa"
+                                : "#eaecfa",
+                              padding: 4,
+                              width: 250,
+                              minHeight: 350,
+                            }}
+                          >
+                            <Tasks columns={columns} column={column} />
+                            {provided.placeholder}
+                          </div>
+                        );
+                      }}
+                    </Droppable>
+                  </div>
+                  {columns && (
+                    <NewTasks
+                      taskIds={taskIds}
+                      columnId={column._id}
+                      columnNumber={columnId}
+                      columnTitle={column.title}
+                    />
+                  )}
                 </div>
-                {columns && (
-                  <NewTasks
-                    taskIds={taskIds}
-                    columnId={column._id}
-                    columnNumber={columnId}
-                    columnTitle={column.title}
-                  />
-                )}
-              </div>
-            );
-          })}
-      </DragDropContext>
+              );
+            })}
+        </DragDropContext>
+      )}
     </div>
   );
 };
