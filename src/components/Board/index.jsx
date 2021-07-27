@@ -1,38 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { useQuery, gql, useMutation } from "@apollo/client";
-import Tasks from "../Tasks";
-import NewTasks from "../NewTask";
-import CircularProgress from "@material-ui/core/CircularProgress";
-
-// This query fetches columns from the backend built in Canonic.
-const GET_COLUMN = gql`
-  query {
-    columns {
-      _id
-      title
-      taskIds {
-        content
-        _id
-        description
-      }
-    }
-  }
-`;
-// This query is used to update a column, it mainly is used when a new task is created so it gets attached to the respective column.
-const UPDATE_COLUMN = gql`
-  mutation updateColumnMutation($_id: ID!, $title: String!, $taskIds: [ID!]!) {
-    updateColumn(_id: $_id, input: { title: $title, taskIds: $taskIds }) {
-      _id
-      title
-      taskIds {
-        _id
-        content
-        description
-      }
-    }
-  }
-`;
+import { useQuery, useMutation } from "@apollo/client";
+import { UPDATE_COLUMN } from "../../GQL/mutations";
+import { GET_COLUMN } from "../../GQL/query";
+import Column from "../Column";
 
 const Board = () => {
   const [columns, setColumns] = useState(null);
@@ -61,7 +31,6 @@ const Board = () => {
   const onDragEnd = (result, columns, setColumns) => {
     if (!result.destination) return;
     const { source, destination } = result;
-
     if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId];
       const destColumn = columns[destination.droppableId];
@@ -80,7 +49,6 @@ const Board = () => {
           taskIds: destItems,
         },
       });
-
       let sour = sourceItems.map((item) => item._id);
       let dest = destItems.map((item) => item._id);
       // Calling mutation to update the backend after drag and drop has changed task's positions
@@ -122,70 +90,13 @@ const Board = () => {
     }
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        height: "100%",
-        marginLeft: "15%",
-      }}
-    >
-      {column.loading ? (
-        <CircularProgress />
-      ) : (
-        <DragDropContext
-          onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-        >
-          {columns &&
-            Object.entries(columns).map(([columnId, column], index) => {
-              return (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                  key={columnId}
-                >
-                  <h2>{column.title}</h2>
-                  <div style={{ margin: 8 }}>
-                    <Droppable droppableId={columnId} key={columnId}>
-                      {(provided, snapshot) => {
-                        return (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            style={{
-                              background: snapshot.isDraggingOver
-                                ? "#eaecfa"
-                                : "#eaecfa",
-                              padding: 4,
-                              width: 250,
-                              minHeight: 350,
-                              borderRadius: "4px",
-                            }}
-                          >
-                            <Tasks columns={columns} column={column} />
-                            {provided.placeholder}
-                          </div>
-                        );
-                      }}
-                    </Droppable>
-                  </div>
-                  {columns && (
-                    <NewTasks
-                      taskIds={taskIds}
-                      columnId={column._id}
-                      columnNumber={columnId}
-                      columnTitle={column.title}
-                    />
-                  )}
-                </div>
-              );
-            })}
-        </DragDropContext>
-      )}
-    </div>
+    <Column
+      column={column}
+      columns={columns}
+      onDragEnd={onDragEnd}
+      setColumns={setColumns}
+      taskIds={taskIds}
+    />
   );
 };
 export default Board;

@@ -1,38 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { gql, useMutation } from "@apollo/client";
-import { makeStyles } from "@material-ui/core/styles";
+import { useMutation } from "@apollo/client";
 import AddIcon from "@material-ui/icons/Add";
 import LoopIcon from "@material-ui/icons/Loop";
 import { TextField, Grid, Button } from "@material-ui/core";
-const useStyles = makeStyles((theme) => ({
-  margin: {
-    margin: theme.spacing(1),
-  },
-}));
+import { UPDATE_COLUMN, ADD_TASK } from "../../GQL/mutations";
+import { useStyles } from "./style";
 
-// Mutation query to add a Task, here content is mandotory but description isn't
-const ADD_TASK = gql`
-  mutation createTaskMutation($content: String!, $description: String!) {
-    createTask(input: { content: $content, description: $description }) {
-      content
-      _id
-      description
-    }
-  }
-`;
-// This query is used to update a column, it mainly is used when a new task is created so it gets attached to the respective column.
-const UPDATE_COLUMN = gql`
-  mutation updateColumnMutation($_id: ID!, $title: String!, $taskIds: [ID!]!) {
-    updateColumn(_id: $_id, input: { title: $title, taskIds: $taskIds }) {
-      _id
-      title
-      taskIds {
-        _id
-        content
-      }
-    }
-  }
-`;
 const NewTask = ({ taskIds, columnId, columnNumber, columnTitle }) => {
   const classes = useStyles();
   const [updateColumn, { loading: UCLoading }] = useMutation(UPDATE_COLUMN);

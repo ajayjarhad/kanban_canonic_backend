@@ -1,22 +1,8 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { Draggable } from "react-beautiful-dnd";
 import CloseIcon from "@material-ui/icons/Close";
 import { Button, Fade, Backdrop, Modal } from "@material-ui/core";
-const useStyles = makeStyles((theme) => ({
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  paper: {
-    position: "absolute",
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-}));
+import { useStyles } from "./style";
 
 const Tasks = ({ columns, column }) => {
   const classes = useStyles();
@@ -43,17 +29,12 @@ const Tasks = ({ columns, column }) => {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     style={{
-                      userSelect: "none",
-                      padding: 16,
-                      margin: "0 0 8px 0",
-                      minHeight: "50px",
-                      borderRadius: "4px",
                       backgroundColor: snapshot.isDragging
                         ? "#19267a"
                         : "#3f51b5",
-                      color: "white",
                       ...provided.draggableProps.style,
                     }}
+                    className={classes.card}
                     onClick={handleOpen}
                   >
                     {item.content}
